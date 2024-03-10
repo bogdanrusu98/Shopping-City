@@ -528,9 +528,9 @@ $result_categorities = mysqli_query($conn, $sql);
 <!--Newsletter-->
 <div class="newsletter-container">
     <p class="newsletter-text">Sign up for our newsletter to receive updates and special offers!</p>
-    <form>
+    <form action="php/register_newsletter.php" method="post">
 
-      <input type="email" class="form-control container" id="exampleInputEmail1" style="width: 280px!important" aria-describedby="emailHelp" placeholder="Your e-mail address">
+      <input type="email" name="email" class="form-control container" id="exampleInputEmail1" style="width: 280px!important" aria-describedby="emailHelp" placeholder="Your e-mail address">
       <button class="newsletter-button mt-2"  type="submit">Sign Up</button>
     </form>
 </div>

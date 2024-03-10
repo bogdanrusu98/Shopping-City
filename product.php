@@ -243,9 +243,7 @@ if ($result->num_rows > 0) {
                 <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal">
                     <img src="<?= $imageHref ?>" width="400" height="400" class="rounded mx-auto d-block img-thumbnail" alt="Product Image"><br>
                 </a>
-                <a class="btn btn-primary my-4 w-100" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                    Descriere
-                </a>
+
 
             </div>
             <div class="col-md-6">
@@ -334,7 +332,10 @@ if ($result->num_rows > 0) {
 
                 <hr>
             </div>
-            <div class="collapse" id="collapseExample">
+            <a class="btn btn-primary my-4 w-100" data-bs-toggle="collapse" href="#collapseDescription" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    Descriere
+                </a>
+            <div class="collapse" id="collapseDescription">
                     <div class="card card-body overflow-auto">
                         <p class="mb-3"><?= $description ?></p>
                     </div>
@@ -761,6 +762,30 @@ if ($result->num_rows > 0) {
                 console.error("Formularul cu ID-ul specificat nu a fost găsit.");
             }
         }
+    </script>
+    <script>
+// Selectează elementul de collapse
+var collapseDescription = document.getElementById('collapseDescription');
+
+// Verifică dacă elementul de collapse există în pagina curentă
+if (collapseDescription) {
+    // Obține toate elementele <img> din interiorul elementului de collapse
+    var images = collapseDescription.querySelectorAll('img');
+
+    // Verifică dacă există poze în interiorul elementului de collapse
+    if (images.length > 0) {
+        // Iterează prin fiecare imagine și adaugă clasa 'img-fluid'
+        images.forEach(function(image) {
+            image.classList.add('img-fluid'); // Adaugă clasa 'img-fluid' la imagine
+        });
+    } else {
+        console.log('Nu există imagini în interiorul elementului de collapse.');
+    }
+} else {
+    console.log('Elementul de collapse nu a fost găsit.');
+}
+
+
     </script>
     <!-- Bootstrap Bundle cu JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

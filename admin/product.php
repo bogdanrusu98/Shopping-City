@@ -347,7 +347,7 @@ if ($result->num_rows > 0) {
 
   <!-- Modal pentru editarea descrierii -->
   <div class="modal fade" id="descriptionModal" tabindex="-1" aria-labelledby="stockModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="stockModalLabel">Modificare Descriere</h5>

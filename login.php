@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           }
     } else {
         // Autentificare eșuată - utilizatorul nu există
-        $_SESSION['message'] = "<div id='success_message' class='my-4 alert alert-danger' role='alert'>Adresa de e-mail nu este valida.</div>";
+        $_SESSION['message'] = "<div id='success_message' class='my-4 alert alert-danger' role='alert'>Username sau adresa de e-mail nu este valida.</div>";
 
     }
 }

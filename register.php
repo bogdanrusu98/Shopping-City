@@ -31,7 +31,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $password = $_POST['password'];
   $confirm_password = $_POST['confirmPassword'];
   $avatar_href = 'uploads/avatar/avatar.png';
-
+  $terms = isset($_POST['terms']) ? 1 : 0;
+  $newsletter = isset($_POST['newsletter']) ? 1 : 0;
+  if($newsletter == 1) {
+ include('php/register_newsletter.php');
+  }
   // Verificăm dacă parola și confirmarea parolei coincid
   if ($password !== $confirm_password) {
     $_SESSION['message'] = "<div id='error_message' class='alert alert-danger' role='alert'>Parola și confirmarea parolei nu coincid.</div>";
@@ -40,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
     // Construim și executăm interogarea SQL pentru a adăuga utilizatorul în baza de date
-    $sql = "INSERT INTO users (username, first_name, last_name, email, passwd, avatar_href) VALUES ('$username', '$first_name', '$last_name', '$email', '$hashed_password', '$avatar_href')";
+    $sql = "INSERT INTO users (username, first_name, last_name, email, passwd, avatar_href, terms_agreed) VALUES ('$username', '$first_name', '$last_name', '$email', '$hashed_password', '$avatar_href', '$terms')";
 
     if ($conn->query($sql) === TRUE) {
       // Setăm un mesaj de confirmare în sesiune
@@ -54,7 +58,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
   }
 }
-
 // Închidem conexiunea la baza de date
 $conn->close();
 
@@ -234,16 +237,22 @@ $conn->close();
       <form action="register.php" method="POST">
         <div class="mb-3">
           <label for="username" class="form-label">Username</label>
-          <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
+          <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" onchange="validateUsername()" required>
+          <span id="usernameError" style="color: red; display: none;">Numele de utilizator trebuie să aibă cel puțin 6 caractere.</span>
+
         </div>
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="firstName" class="form-label">First Name</label>
-            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter first name" required>
+            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter first name" onchange="validateFirstName()" required>
+            <span id="firstNameError" style="color: red; display: none;">Prenumele trebuie să aibă cel puțin 3 caractere.</span>
+
           </div>
           <div class="col-md-6 mb-3">
             <label for="lastName" class="form-label">Last Name</label>
-            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter last name" required>
+            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter last name"  onchange="validateLastName()" required>
+            <span id="lastNameError" style="color: red; display: none;">Numele trebuie să aibă cel puțin 3 caractere.</span>
+
           </div>
         </div>
         <div class="mb-3">
@@ -252,11 +261,25 @@ $conn->close();
         </div>
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
-          <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Password" onchange="validatePassword()" required>
+          <span id="passwordError" style="color: red; display: none;">Parola trebuie să aibă cel puțin 6 caractere.</span>
+
         </div>
         <div class="mb-3">
           <label for="confirmPassword" class="form-label">Confirm Password</label>
-          <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required>
+          <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" onchange="validateConfirmPassword()" required>
+          <span id="confirmPasswordError" style="color: red; display: none;">Parola de confirmare trebuie să corespundă cu parola.</span>
+        </div>
+        <div class="mb-3 form-check">
+          <input class="form-check-input" type="checkbox" value="" id="terms" name="terms" required>
+          <label class="form-check-label" for="terms">
+          Am citit și sunt de acord cu <a href="terms.php" class="text-primary">Termenii și Condițiile</a>, cu <a href="confidentiality.php" class="text-primary">Politica de Confidențialitate</a>. Confirm că am peste 18 ani.
+          </label>
+        </div>
+        <div class="mb-3 form-check">
+          <input class="form-check-input" type="checkbox" value="1" name="newsletter" id="newsletter">
+          <label class="form-check-label" for="newsletter">
+          Vreau să primesc oferte și reduceri prin Newsletterul Shopping City (vei primi un email separat pentru confirmarea înscrierii).          </label>
         </div>
         <button type="submit" class="btn btn-primary mt-2">Register</button>
         <?php
@@ -309,6 +332,7 @@ $conn->close();
 
   </footer><!-- Bootstrap Bundle cu JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/register_validate.js"></script>
 </body>
 
 </html>
