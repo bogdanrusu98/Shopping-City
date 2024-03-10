@@ -1,0 +1,161 @@
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-style: normal;
+  font-size: 14px;
+  overflow-x: hidden!important;
+  width: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+.btn-primary {
+  background-color: #abd373;
+border: none;
+font-weight: bold;
+color: #333;
+}
+.btn:hover {
+  background-color: #7f9c56;
+
+}
+.fa-brands {
+  color: grey;
+}
+.offcanvas {
+  width: 256px!important;
+}
+
+.fa-brands:hover {
+  color: #abd373
+}
+
+#Follow {
+  color: #333;
+  font-size: 14px;
+}
+
+.nav-link {
+  font-weight: bold;
+}
+
+.nav-link:hover {
+  color: #abd373;
+}
+
+
+
+a{
+  color: inherit;
+}
+
+.dropdown-item:hover {
+  color: #abd373!important;
+  background-color: inherit;
+}
+
+.fa-star {
+  color: #ffc107!important;
+}
+
+.card h5 {
+  min-height: 48px;
+}
+
+
+
+      /* Stilizare pentru containerul newsletter */
+      .newsletter-container {
+          background-color: #abd373;
+          padding: 20px;
+          text-align: center;
+      }
+
+      /* Stilizare pentru textul din newsletter */
+      .newsletter-text {
+          font-size: 1.2rem;
+          color: #333;
+          margin-bottom: 10px;
+      }
+
+      /* Stilizare pentru butonul din newsletter */
+      .newsletter-button {
+          background-color: #007bff;
+          color: #fff;
+          border: none;
+          padding: 10px 20px;
+          font-size: 1rem;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+      }
+
+      /* Stilizare pentru butonul la hover */
+      .newsletter-button:hover {
+          background-color: #0056b3;
+      }
+
+
+.footer {
+  background-color: #333; /* Culoarea de fundal a footer-ului */
+  color: white; /* Culoarea textului din footer */
+  padding: 20px 0; /* Spațierea internă a footer-ului */
+}
+
+.footer a {
+  color: white; /* Culoarea link-urilor din footer */
+}
+
+.footer a:hover {
+  color: #abd373; /* Culoarea link-urilor la hover */
+}
+.social-buttons {
+  text-align: center; /* Aliniere butoane sociale în centru */
+  font-size: 30px;
+}
+
+.feature-icon:hover {
+  color:#abd373;
+}
+
+.breadcrumb {
+  margin-bottom: 0;
+}
+
+.breadcrumb .active {
+color:#abd373;
+}
+
+.products img{
+object-fit: contain;
+}
+
+.selected {
+background-color: #abd373;
+color: #198754;
+}
+
+.selected i {
+color: #198754!important;
+}
+
+.progress-bar{
+background-color: #abd373;
+}
+.nav-link.active {
+background-color: #abd373;
+}
+.btn:disabled {
+  background-color: #abd373;
+  border-color: #abd373;
+}
+.btn-outline-primary {
+  color: #abd373;
+  border-color: #abd373;
+  
+}

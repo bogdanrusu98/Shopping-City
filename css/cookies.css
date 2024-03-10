@@ -1,0 +1,32 @@
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    text-align: center;
+    z-index: 9;
+}
+
+.cookie-banner p {
+    margin: 0;
+}
+
+#accept-cookies-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#accept-cookies-btn:hover {
+    background-color: #45a049;
+}
