@@ -3,32 +3,52 @@
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
-$error_message = " ";
-// Verifică dacă există sesiunea pentru username
-if (isset($_SESSION['id'])) {
-  $id = $_SESSION['id'];
-}
-// Conectarea la baza de date și alte fișiere necesare
-include '../php/config.php';
+include("../php/config.php");
 include("../php/total_products.php");
 include("../php/total_products_wishlist.php");
 include("../php/check_settings.php");
 
+$error_message = " ";
+// Verifică dacă există sesiunea pentru username
+if (isset($_SESSION['id'])) {
+  $id = $_SESSION['id'];
+} else {
+  // Dacă nu există sesiune, redirecționează către pagina de autentificare
+  header("Location: ../login.php"); // Înlocuiește cu pagina ta de autentificare
+  exit();
+}
+
+// Interogare pentru a prelua datele din baza de date
+$sql = "SELECT * FROM users where id = $id";
+$result = $conn->query($sql);
 
 
+// Preia prima (și singura) înregistrare din rezultatele interogării
+$row = $result->fetch_assoc();
+$email = $row['email'];
+
+$sql_newsletter = "SELECT * FROM newsletter_subscribers WHERE email = '$email'";
+$result = $conn->query($sql_newsletter);
 
 
+if ($result->num_rows > 0) {
+    // Preia prima (și singura) înregistrare din rezultatele interogării
+    $row = $result->fetch_assoc();
+    $id_newsletter = $row['id'];
+} else {
+    $id_newsletter = null;
+}
 
 
+// Verifică dacă sunt trimise date prin metoda POST
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  // Preiați datele din formular
+  $email = isset($_POST['email']) ? $_POST['email'] : null;
 
-
+}
 
 
 ?>
-
-
-
-
 <!DOCTYPE html>
 <html>
 
@@ -69,84 +89,7 @@ include("../php/check_settings.php");
 
 
   <style>
-    .my-account {
-      display: flex;
-
-    }
-
-    .sidebar {
-      width: 200px;
-      /* Lățimea sidebar-ului */
-      color: black;
-      /* Culoarea textului din sidebar */
-      background-color: #f2f2f2;
-
-    }
-
-    .sidebar ul {
-      list-style-type: none;
-      padding: 0;
-    }
-
-    .sidebar ul li {
-      margin-bottom: 10px;
-      font-size: 13px;
-      font-weight: bold;
-      color: black;
-    }
-
-    .sidebar ul li i {
-      font-size: 30px;
-      color: #abd373;
-    }
-
-    .sidebar ul li:hover {
-      background-color: lightgrey;
-      color: white !important;
-    }
-
-    .sidebar ul li a {
-      color: black;
-      text-decoration: none;
-    }
-
-    .content {
-      flex-grow: 1;
-      padding: 20px;
-      background-color: #f2f2f2;
-      /* Culoarea de fundal a conținutului principal */
-    }
-
-    .image-avatar {
-      position: relative;
-      display: inline-block;
-    }
-
-    @media only screen and (max-width: 578px) {
-      .container.my-account {
-        flex-direction: column;
-        /* Schimbă direcția flexbox la coloană */
-      }
-
-      .sidebar {
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-        order: 2;
-        /* Schimbă ordinea sidebar-ului */
-        width: 100%;
-        /* Ocupă întreaga lățime pe ecranele mici */
-        overflow: hidden;
-      }
-
-      .content {
-        order: 1;
-        /* Schimbă ordinea conținutului */
-      }
-
-      .my-account {
-        height: auto;
-      }
-    }
+ 
   </style>
 
 
@@ -167,7 +110,7 @@ include("../php/check_settings.php");
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <?php if (isset($_SESSION['email'])) { ?>
             <!-- Dacă utilizatorul este autentificat, afișează alte opțiuni -->
-            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="myaccount.php">Profile</a></li>
+            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="../user/myaccount.php">Profile</a></li>
             <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings/settings.php">Settings</a></li>
             <li>
               <hr class="dropdown-divider">
@@ -256,152 +199,72 @@ include("../php/check_settings.php");
           </div>
         </div>
     </nav>
-  </div>
+
   </div>
 
+  <div class="shadow-lg p-3 mb-5 bg-body rounded " id="breadcrumb">
+    <div class="container">
+      <nav aria-label="breadcrumb align-middle ">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item align-middle"><a href="../index.php">Home</a></li>
+          <li class="breadcrumb-item align-middle active" aria-current="page">My Account</li>
+
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+
+  <!--My account -->
 
   <div class="container my-account my-4">
-    <!-- Sidebar -->
-    <div class="sidebar rounded">
-      <ul class="p-2">
-        <a href="shopping.php">
-          <li class="p-1 selected"><i class="fa-solid fa-file"></i> <span> Comenzi </span></li>
-        </a>
-        <a href="vouchers.php">
-          <li class="p-1"><i class="fa-solid fa-ticket"></i> <span> Vouchere </span></li>
-        </a>
-        <a href="#">
-          <li class="p-1"><i class="fa-solid fa-wrench text-primary"></i> <span> Service </span></li>
-        </a>
-        <a href="#">
-          <li class="p-1"><i class="fa-solid fa-rotate-left"></i> Retur</li>
-        </a>
-        <a href="#">
-          <li class="p-1"><i class="fa-solid fa-shield"></i> Garantii</li>
-        </a>
-        <a href="addresses.php">
-          <li class="p-1"><i class="fa-solid fa-location-dot"></i> Adrese de livrare</li>
-        </a>
-        <a href="companies.php">
-          <li class="p-1"><i class="fa-solid fa-building"></i> Date de facturare</li>
-        </a>
-        <a href="#">
-          <li class="p-1"><i class="fa-solid fa-right-from-bracket text-danger"></i> Logout</li>
-        </a>
-      </ul>
-    </div>
-
     <hr class="mx-1">
-
-    <!-- Content -->
-    <div class="content rounded">
+    <div class="content rounded ">
       <div class="row container">
-        <div class="col-md-12">
-          <h4>Comenzile mele</h4>
+        <div class="col-md-12 ">
+          <h2>Abonarile mele</h2>
+          <hr>
+          <?php
+            if($id_newsletter != null) {
+                ?>
+                <h4>Felicitari! Esti abonat!</h4>
+                <p>Pentru a de dezabona de la newsletter apasa butonul de mai jos</p>
+                <button id="unsubscribeButton" class="btn btn-danger">Dezabonare newsletter</button>
+                
+                <?php
+            }else {   
+                ?>
+                <h4>Nu esti abonat la newsletter!</h4>
+                <!--Newsletter-->
+<div class="newsletter-container m-4">
+    <p class="newsletter-text">Sign up for our newsletter to receive updates and special offers!</p>
+    <form id="newsletterForm">
+    <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4 mb-3">
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" onchange="validatename()" required>
+            <span id="nameError" style="color: red; display: none;">Numele trebuie să aibă cel puțin 3 caractere.</span>
         </div>
-      </div>
-
-      <hr class="my-4">
-<?php
-
-// Interogare pentru a obține produsele din coș pentru utilizatorul curent
-$sql = "SELECT * FROM orders WHERE user_id = $id";
-$result = mysqli_query($conn, $sql);
-if (mysqli_num_rows($result) > 0) {
-    while ($row = mysqli_fetch_assoc($result)) {
-        $order_id = $row['order_id'];
-        $order_date = $row['order_date'];
-        setlocale(LC_TIME, 'ro_RO.UTF-8');
-        $order_date_obj = new DateTime($order_date);
-        $order_date = $order_date_obj->format('j F Y - H:i');
-        $status = $row['status'];
-
-        $total_amount = $row['total_amount'];
-    // Extrage prețul și cantitatea produsului curent
-        ?>
-        <div class="card my-2 mb-0">
-            
-        <div class="card-body mt-3">
-    <strong>Comanda nr #<?=$order_id?></strong>
-    <span class="float-end">Total: <?=$total_amount?> lei</span>
-    <span class="float-end me-3"><?=$order_date?></span>
+        <div class="col-md-4">
+            <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Your e-mail address">
+        </div>
+    </div>
 </div>
-<div class="d-flex justify-content-between align-items-center container">
-    <p class="mb-0 fs-6 fw-bold" style="color: #abd373">
-        <?php
-        if ($status == "New") {
-            echo "Comanda plasată";
-            $imagePath = "../img/icons/orderPlaced.jpg";
-        } elseif ($status == "processing") {
-            echo "În procesare";
-            $imagePath = "../img/icons/processing.jpg"; // Schimbă calea către imaginea corespunzătoare
-        } elseif ($status == "shipping") {
-            echo "În drum spre tine";
-            $imagePath = "../img/icons/shipping.jpg"; // Schimbă calea către imaginea corespunzătoare
-        } elseif ($status == "shipped") {
-            echo "Comanda livrată";
-            $imagePath = "../img/icons/shipped.jpg"; // Schimbă calea către imaginea corespunzătoare
-        }elseif ($status == "canceled") {
-          echo "Comanda anulata";
-          $imagePath = "../img/icons/canceled.jpg"; // Schimbă calea către imaginea corespunzătoare
-      } else {
-            // Setează un text și o imagine default în caz că statusul nu este recunoscut
-            echo "Status necunoscut";
-            $imagePath = "../img/icons/default.jpg"; // Schimbă calea către o imagine default
-        }
-        ?>
-    </p>
-    <img class="mb-2" src="<?=$imagePath?>" width="60">
-</div><div></div></div>
 
-        <a href="order.php?order_id=<?=$order_id?>" class="btn btn-outline-secondary w-100 my-0 text-dark">Mai multe detalii</a>
-        <?php
-        
-       
-    }}else{
-        echo 'Nu ai inregistrat nicio comanda!';
-    }
-?>
+      <button class="newsletter-button mt-2"  id="submitButtonNews">Sign Up</button>            
       
-    </div></div>
-  </div></div>
-
-
-
-
-
-
-
-
-
-
-
-  <div class="modal" tabindex="-1" style="display: none;" id="change-data">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Adauga voucher nou</h5>
-          <button type="button" class="btn-close" onclick="closeModal()" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form method="post" id="myForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-
-
-            <div class="mb-3">
-              <label for="voucher_series" class="form-label">Introdu aici seria:</label>
-              <input class="form-control" type="text" id="voucher_code" name="voucher_code">
-            </div>
-
-          </form>
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closeModal()" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="submitForm()">Save changes</button>
+    </form>
+    <div id="message" style="margin-top: 10px;"></div>
+</div>
+        <?php    
+        }
+          ?>
+            
         </div>
       </div>
     </div>
   </div>
+
 
 
 
@@ -442,27 +305,63 @@ if (mysqli_num_rows($result) > 0) {
     </div>
 
   </footer>
-  <script>
-    function showUploadForm() {
-      var uploadForm = document.getElementById("uploadForm");
-      uploadForm.style.display = "block";
-    }
-    // Funcție pentru a închide modalul
-    function closeModal() {
-      document.getElementById('change-data').style.display = "none";
+
+        <script src="../js/register_validate.js"></script>
+      <script>
+        document.getElementById('submitButtonNews').addEventListener('click', function(event) {
+    event.preventDefault(); // Previne comportamentul implicit de submit al formularului
+
+    var name = document.getElementById('name').value;
+    var email = document.getElementById('exampleInputEmail1').value;
+
+    // Exemplu de validare simplă pentru nume
+    if (name.length < 3) {
+        document.getElementById('nameError').style.display = 'block';
+        return; // Ieși din funcție pentru a nu trimite datele
+    } else {
+        document.getElementById('nameError').style.display = 'none';
     }
 
-    function showModal() {
-      var uploadData = document.getElementById("change-data");
-      uploadData.style.display = "inline-block";
-    }
+    // Trimite datele către server utilizând AJAX
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '../php/register_newsletter.php', true);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var response = JSON.parse(xhr.responseText);
+            document.getElementById('message').innerText = response.message;
+            if (response.status === 'success') {
+                document.getElementById('message');
+            } else {
+                document.getElementById('message').style.color = 'red';
+            }
+        }
+    };
+    xhr.send('name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email));
+});
 
-    // Funcție pentru a trimite datele formularului
-    function submitForm() {
-      // Aici poți adăuga logica pentru a trimite datele formularului folosind AJAX sau poți folosi form.submit() direct
-      document.getElementById("myForm").submit(); // Acesta va trimite datele formularului
-    }
-  </script>
+      </script>
+      <script>
+        document.getElementById('unsubscribeButton').addEventListener('click', function() {
+    // Trimite o cerere AJAX către fișierul PHP care va șterge adresa de email din baza de date
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '../php/unsubscribe.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                // Răspunsul de la server
+                alert(xhr.responseText);
+            } else {
+                // A apărut o eroare în timpul procesării cererii AJAX
+                alert('Eroare: ' + xhr.status);
+            }
+        }
+    };
+    xhr.send();
+});
+
+        </script>
   <!-- Adaugă script-ul jQuery și Bootstrap JS la sfârșitul documentului pentru performanță -->
 </body>
 

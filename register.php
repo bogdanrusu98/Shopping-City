@@ -25,8 +25,7 @@ include("php/check_settings.php");
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // Preia datele din formular
   $username = $_POST['username'];
-  $first_name = $_POST['firstName'];
-  $last_name = $_POST['lastName'];
+  $name = $_POST['name'];
   $email = $_POST['email'];
   $password = $_POST['password'];
   $confirm_password = $_POST['confirmPassword'];
@@ -44,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
     // Construim și executăm interogarea SQL pentru a adăuga utilizatorul în baza de date
-    $sql = "INSERT INTO users (username, first_name, last_name, email, passwd, avatar_href, terms_agreed) VALUES ('$username', '$first_name', '$last_name', '$email', '$hashed_password', '$avatar_href', '$terms')";
+    $sql = "INSERT INTO users (username, name, email, passwd, avatar_href, terms_agreed) VALUES ('$username', '$name', '$email', '$hashed_password', '$avatar_href', '$terms')";
 
     if ($conn->query($sql) === TRUE) {
       // Setăm un mesaj de confirmare în sesiune
@@ -75,7 +74,8 @@ $conn->close();
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome pentru stele -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
+        <!--ICON-->
+        <link rel="icon" type="image/x-icon" href="img/logo-color.png">
   <link rel="stylesheet" href="css/nav.css">
   <style>
     .feature-icon {
@@ -125,7 +125,7 @@ $conn->close();
           <?php if (isset($_SESSION['email'])) { ?>
             <!-- Dacă utilizatorul este autentificat, afișează alte opțiuni -->
             <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="profile.php">Profile</a></li>
-            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings.php">Settings</a></li>
+            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings/settings.php">Settings</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -232,7 +232,7 @@ $conn->close();
 
 
   <div class="container">
-    <div class="register-container  my-4 shadow p-3 mb-5 bg-body rounded">
+    <div class="register-container  my-4 shadow p-5 mb-5 bg-body rounded">
       <h2 class="mb-4">Register</h2>
       <form action="register.php" method="POST">
         <div class="mb-3">
@@ -241,20 +241,13 @@ $conn->close();
           <span id="usernameError" style="color: red; display: none;">Numele de utilizator trebuie să aibă cel puțin 6 caractere.</span>
 
         </div>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="firstName" class="form-label">First Name</label>
-            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter first name" onchange="validateFirstName()" required>
-            <span id="firstNameError" style="color: red; display: none;">Prenumele trebuie să aibă cel puțin 3 caractere.</span>
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter first name" onchange="validatename()" required>
+            <span id="nameError" style="color: red; display: none;">Numele trebuie să aibă cel puțin 3 caractere.</span>
 
           </div>
-          <div class="col-md-6 mb-3">
-            <label for="lastName" class="form-label">Last Name</label>
-            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter last name"  onchange="validateLastName()" required>
-            <span id="lastNameError" style="color: red; display: none;">Numele trebuie să aibă cel puțin 3 caractere.</span>
 
-          </div>
-        </div>
         <div class="mb-3">
           <label for="email" class="form-label">Email address</label>
           <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email" required>

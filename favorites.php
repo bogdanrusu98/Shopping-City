@@ -63,7 +63,8 @@ if (isset($_SESSION['id'])) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
-
+        <!--ICON-->
+        <link rel="icon" type="image/x-icon" href="img/logo-color.png">
     <link rel="stylesheet" href="css/nav.css">
     <style>
       .feature-icon {
@@ -104,7 +105,7 @@ if (isset($_SESSION['id'])) {
             <?php if (isset($_SESSION['email'])) { ?>
               <!-- Dacă utilizatorul este autentificat, afișează alte opțiuni -->
               <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="user/myaccount.php">Profile</a></li>
-              <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings.php">Settings</a></li>
+              <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings/settings.php">Settings</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>

@@ -166,7 +166,7 @@ $result = mysqli_query($conn, $sql);
             ?>
 
             <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="user/myaccount.php">Profile</a></li>
-            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings.php">Settings</a></li>
+            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings/settings.php">Settings</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>

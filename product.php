@@ -53,7 +53,8 @@ if ($result->num_rows > 0) {
 
     <!-- Includerea jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
+        <!--ICON-->
+        <link rel="icon" type="image/x-icon" href="img/logo-color.png">
 
     <link rel="stylesheet" href="css/nav.css">
     <style>
@@ -130,7 +131,7 @@ if ($result->num_rows > 0) {
                         ?>
 
                         <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="user/myaccount.php">Profile</a></li>
-                        <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings.php">Settings</a></li>
+                        <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings/settings.php">Settings</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -256,7 +257,7 @@ if ($result->num_rows > 0) {
                 </p>
 
 
-                <p class="mb-2"><strong>Preț:</strong> <?= $price ?> Lei</p>
+                <p class="mb-2 text-danger fs-3"><?= $price ?> Lei</p>
                 <p class="mb-4"><strong>Stoc:</strong>
 
 
@@ -385,7 +386,7 @@ if ($result->num_rows > 0) {
                                 </span>
                             
                                 </p>
-                                <p class="card-text"><?= $price ?> Lei</p>
+                                <p class="card-text text-danger fs-5"><?= $price ?> Lei</p>
                                 <div class="d-flex">
                                     <!-- Formular pentru adăugarea în coș -->
                                     <form method="POST" action="php/add_to_cart.php" class="d-inline-block position-relative">
@@ -515,8 +516,7 @@ if ($result->num_rows > 0) {
                             $userRow = $userResult->fetch_assoc();
                             $username = $userRow['username'];
                             $avatar = $userRow['avatar_href']; // presupunând că este calea către avatar în baza de date
-                            $last_name = $userRow['last_name'];
-                            $first_name = $userRow['first_name'];
+                            $name = $userRow['name'];
                         }
             ?>
                         <div class="card w-100 mb-3 ">
@@ -525,7 +525,7 @@ if ($result->num_rows > 0) {
                                     <div class="col-md-3 col-lg-2">
                                         <!-- Avatarul utilizatorului -->
                                         <img src="<?php echo $avatar; ?>" alt="Avatar" class="avatar">
-                                        <h6 class="card-subtitle mb-2 text-muted my-2 fw-bold"><?php echo $last_name . ' ' . $first_name; ?></h6>
+                                        <h6 class="card-subtitle mb-2 text-muted my-2 fw-bold"><?php echo $name; ?></h6>
                                         <p class="card-text  text-muted" style="font-size:10px;"><?php echo $reviewDate; ?></p>
                                     </div>
                                     <div class="col-md-9 col-lg-10">

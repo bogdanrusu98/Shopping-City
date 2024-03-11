@@ -1,8 +1,9 @@
 <?php
 // Verifică dacă sesiunea nu este deja pornită
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+  session_start();
 }
+
 include("php/config2.php");
 include("php/config.php");
 include("php/check_settings.php");
@@ -163,7 +164,7 @@ width: 100%!important;
               ?>
 
             <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="user/myaccount.php">Profile</a></li>
-            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings.php">Settings</a></li>
+            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings/settings.php">Settings</a></li>
             <li><hr class="dropdown-divider"></li>
             <form method="post" action="php/logout.php">
             <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="php/logout.php">Log out</a></li>
@@ -264,8 +265,8 @@ width: 100%!important;
     </div>
     <div class="carousel-item" style="background-image: url('img/image2.jpg'); ">
       <div class="carousel-content container">
-        <h2>Telefoane Inteligente: Inovație în Palmă</h2>
-        <p>Experimentează Viitorul în Fiecare Apel</p>
+        <h2 class="text-info">Telefoane Inteligente: Inovație în Palmă</h2>
+        <p class="text-white">Experimentează Viitorul în Fiecare Apel</p>
         <a href="#" class="btn btn-primary btn-shopping">Shopping Now</a>
       </div>
     </div>
@@ -333,7 +334,7 @@ width: 100%!important;
                                                       ?>
                                     </span>
                                 </p>
-                                <p class="card-text">Pret: <?php echo $row['price']; ?> lei</p>
+                                <p class="card-text text-danger fs-5"><?php echo $row['price']; ?> lei</p>
                                 <div class="d-flex">
                                 <!-- Formular pentru adăugarea în coș -->
                                 <form method="POST" action="php/add_to_cart.php" class="d-inline-block position-relative">
@@ -445,7 +446,7 @@ $result_categorities = mysqli_query($conn, $sql);
 
                                                     </span>
                                                 </p>
-                                                <p class="card-text">Pret: <?php echo $row['price']; ?> lei</p>
+                                                <p class="card-text text-danger fs-5"><?php echo $row['price']; ?> lei</p>
                                                 <div class="d-flex">
                                                 <!-- Formular pentru adăugarea în coș -->
                                                 <form method="POST" action="php/add_to_cart.php" class="d-inline-block position-relative">
@@ -528,11 +529,23 @@ $result_categorities = mysqli_query($conn, $sql);
 <!--Newsletter-->
 <div class="newsletter-container">
     <p class="newsletter-text">Sign up for our newsletter to receive updates and special offers!</p>
-    <form action="php/register_newsletter.php" method="post">
+    <form id="newsletterForm">
+    <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4 mb-3">
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" onchange="validatename()" required>
+            <span id="nameError" style="color: red; display: none;">Numele trebuie să aibă cel puțin 3 caractere.</span>
+        </div>
+        <div class="col-md-4">
+            <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Your e-mail address">
+        </div>
+    </div>
+</div>
 
-      <input type="email" name="email" class="form-control container" id="exampleInputEmail1" style="width: 280px!important" aria-describedby="emailHelp" placeholder="Your e-mail address">
-      <button class="newsletter-button mt-2"  type="submit">Sign Up</button>
+      <button class="newsletter-button mt-2"  id="submitButtonNews">Sign Up</button>            
+      
     </form>
+    <div id="message" style="margin-top: 10px;"></div>
 </div>
 
 <div id="services" class="container">
@@ -616,5 +629,7 @@ $result_categorities = mysqli_query($conn, $sql);
         
     }
     </script>
+      <script src="js/register_validate.js"></script>
+      <script src="js/newsletter_message.js"></script>
     </body>
 </html>

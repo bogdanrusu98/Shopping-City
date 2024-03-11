@@ -209,7 +209,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <?php if (isset($_SESSION['email'])) { ?>
             <!-- Dacă utilizatorul este autentificat, afișează alte opțiuni -->
             <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="myaccount.php">Profile</a></li>
-            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings.php">Settings</a></li>
+            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings/settings.php">Settings</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>

@@ -4,6 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 $error_message = " ";
+$newStatus = '';
 // Verifică dacă există sesiunea pentru username
 if (isset($_SESSION['id'])) {
   $id = $_SESSION['id'];
@@ -124,7 +125,7 @@ if (mysqli_num_rows($result) > 0) {
           <?php if (isset($_SESSION['email'])) { ?>
             <!-- Dacă utilizatorul este autentificat, afișează alte opțiuni -->
             <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="myaccount.php">Profile</a></li>
-            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings.php">Settings</a></li>
+            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings/settings.php">Settings</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -260,85 +261,110 @@ if (mysqli_num_rows($result) > 0) {
         </div>
     </div>
     <?php
-      if ($type_d = 'F') {
-                  $contact = "SELECT * FROM addresses WHERE id = $address_d";
-                  $result = mysqli_query($conn, $contact);
-            if (mysqli_num_rows($result) > 0) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                  $id_type = $row['id_type'];
+// Verificare pentru persoane fizice sau juridice folosind $type_d și $type_f
+if ($type_d == 'F') {
+    // Interogare pentru persoane fizice utilizând $address_d
+    $contact = "SELECT * FROM addresses WHERE id = $address_d";
+    $result = mysqli_query($conn, $contact);
 
-                    // Extrage prețul și cantitatea produsului curent
-                        $user_name = $row['user_name']; 
-                        $telefon = $row['telefon']; 
-                        $city = $row['city']; 
-                        $county = $row['county']; 
-                
-                        $address = $row['address']; 
-                } } else {
-                  
-                  
-                  $contact = "SELECT * FROM companies WHERE company_id = $address_d";
-                  $result = mysqli_query($conn, $contact);
-            if (mysqli_num_rows($result) > 0) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                  $id_type = $row['id_type'];
-
-                    // Extrage prețul și cantitatea produsului curent
- 
-
-                        $user_name = $row['company_name']; 
-                  $fiscal_code = $row['fiscal_code']; 
-                  $country = $row['country']; 
-                  $registration_number = $row['registration_number']; 
-                  $city = $row['city']; 
-                  $telefon = $row['phone_number']; 
-                  $county = $row['county']; 
-                  $address = $row['address']; 
-                }}
-  
-                  
-                }
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $id_type = $row['id_type'];
+            $user_name = $row['user_name']; 
+            $telefon = $row['telefon']; 
+            $city = $row['city']; 
+            $county = $row['county']; 
+            $address = $row['address']; 
+        }
     }
+} else {
+    // Interogare pentru companii utilizând $address_d
+    $contact = "SELECT * FROM companies WHERE company_id = $address_d";
+    $result = mysqli_query($conn, $contact);
 
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $id_type = $row['id_type'];
+            $user_name = $row['company_name']; 
+            $fiscal_code = $row['fiscal_code']; 
+            $country = $row['country']; 
+            $registration_number = $row['registration_number']; 
+            $city = $row['city']; 
+            $telefon = $row['phone_number']; 
+            $county = $row['county']; 
+            $address = $row['address']; 
+        }
+    }
+}
 
-    
-    if ($type_f = 'F') {
-      $contact = "SELECT * FROM addresses WHERE id = $address_f";
-      $result = mysqli_query($conn, $contact);
-if (mysqli_num_rows($result) > 0) {
-    while ($row = mysqli_fetch_assoc($result)) {
-      $id_type = $row['id_type'];
+if ($type_f == 'F') {
+    // Interogare pentru persoane fizice utilizând $address_f
+    $contact = "SELECT * FROM addresses WHERE id = $address_f";
+    $result = mysqli_query($conn, $contact);
 
-        // Extrage prețul și cantitatea produsului curent
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $id_type = $row['id_type'];
             $user_name_f = $row['user_name']; 
             $telefon_f = $row['telefon']; 
             $city_f = $row['city']; 
             $county_f = $row['county']; 
-    
             $address_f = $row['address']; 
-    } } else {
-      
-      
-      $contact = "SELECT * FROM companies WHERE company_id = $address_f";
-      $result = mysqli_query($conn, $contact);
-if (mysqli_num_rows($result) > 0) {
-    while ($row = mysqli_fetch_assoc($result)) {
-      $id_type = $row['id_type'];
+        }
+    }
+} else {
+    // Interogare pentru companii utilizând $address_f
+    $contact = "SELECT * FROM companies WHERE company_id = $address_f";
+    $result = mysqli_query($conn, $contact);
 
-        // Extrage prețul și cantitatea produsului curent
-
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $id_type = $row['id_type'];
             $user_name_f = $row['company_name']; 
-      $fiscal_code_f = $row['fiscal_code']; 
-      $country_f = $row['country']; 
-      $registration_number_f = $row['registration_number']; 
-      $city_f = $row['city']; 
-      $telefon_f = $row['phone_number']; 
-      $county_f = $row['county']; 
-      $address_f = $row['address']; 
-    }}}}
-    ?>
+            $fiscal_code_f = $row['fiscal_code']; 
+            $country_f = $row['country']; 
+            $registration_number_f = $row['registration_number']; 
+            $city_f = $row['city']; 
+            $telefon_f = $row['phone_number']; 
+            $county_f = $row['county']; 
+            $address_f = $row['address']; 
+        }
+    }
+}
+?>
+
     <h4 class="mb-3 mt-3">Produse vandute</h4>
-      
+      <div class="card">
+        <?php
+        if ($status == "New") {
+            $newStatus = "Comanda plasată";
+            $imagePath = "../img/icons/orderPlaced.jpg";
+        } elseif ($status == "processing") {
+            $newStatus = "În procesare";
+            $imagePath = "../img/icons/processing.jpg"; // Schimbă calea către imaginea corespunzătoare
+        } elseif ($status == "shipping") {
+            $newStatus = "În drum spre tine";
+            $imagePath = "../img/icons/shipping.jpg"; // Schimbă calea către imaginea corespunzătoare
+        } elseif ($status == "shipped") {
+            $newStatus = "Comanda livrată";
+            $imagePath = "../img/icons/shipped.jpg"; // Schimbă calea către imaginea corespunzătoare
+        }elseif ($status == "canceled") {
+          $newStatus = "Comanda anulata";
+          $imagePath = "../img/icons/canceled.jpg"; // Schimbă calea către imaginea corespunzătoare
+      } else {
+            // Setează un text și o imagine default în caz că statusul nu este recunoscut
+            echo "Status necunoscut";
+            $imagePath = "../img/icons/default.jpg"; // Schimbă calea către o imagine default
+        }
+        ?>
+     <div class="d-flex align-items-center">
+    <img src="<?=$imagePath?>" width="100" class="me-3">
+    <span style="color: #abd373" class="fs-5 fw-bold"><?=$newStatus?></span>
+</div>
+
+  
+    </div>
+
             <div class="row">
               <div class="col-md-4 card p-3">
                   <span class="fw-bold my-2">Modalitate livrare:</span>

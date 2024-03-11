@@ -24,14 +24,12 @@ $result = $conn->query($sql);
 
 // Preia prima (și singura) înregistrare din rezultatele interogării
 $row = $result->fetch_assoc();
-$first_name = $row['first_name'];
-$last_name = $row['last_name'];
+$name = $row['name'];
 $email = $row['email'];
 $username = $row['username'];
 $phone = $row['phone'];
 $gender = $row['gender'];
-$first_name = $row['first_name'];
-$last_name = $row['last_name'];
+$name = $row['name'];
 $avatar_href = $row['avatar_href'];
 $birthDate = $row['birthDate'];
 // Verifică dacă sunt trimise date prin metoda POST
@@ -41,8 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $phone = isset($_POST['phone']) ? $_POST['phone'] : null;
   $gender = isset($_POST['gender']) ? $_POST['gender'] : null;
 
-  $first_name = isset($_POST['first_name']) ? $_POST['first_name'] : null;
-  $last_name = isset($_POST['last_name']) ? $_POST['last_name'] : null;
+  $name = isset($_POST['name']) ? $_POST['name'] : null;
   $birthDate = isset($_POST['birthDate']) ? $_POST['birthDate'] : null;
   // Construiește interogarea SQL de actualizare
   $sql = "UPDATE users SET ";
@@ -54,11 +51,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if ($gender !== null && $gender !== '') {
     $set_values[] = "gender='$gender'";
   }
-  if ($first_name !== null && $first_name !== '') {
-    $set_values[] = "first_name='$first_name'";
-  }
-  if ($last_name !== null && $last_name !== '') {
-    $set_values[] = "last_name='$last_name'";
+  if ($name !== null && $name !== '') {
+    $set_values[] = "name='$name'";
   }
   if ($birthDate !== null && $birthDate !== '') {
     $set_values[] = "birthDate='$birthDate'";
@@ -218,7 +212,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <?php if (isset($_SESSION['email'])) { ?>
             <!-- Dacă utilizatorul este autentificat, afișează alte opțiuni -->
             <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="myaccount.php">Profile</a></li>
-            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings.php">Settings</a></li>
+            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings/settings.php">Settings</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -373,7 +367,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <div class="col-md-9">
               <h6>Alias: <?= $username ?></h6>
-              <h6>Nume: <?= $last_name . " " . $first_name ?></h6>
+              <h6>Nume: <?=$name ?></h6>
               <h6>Email: <?= $email ?></h6>
               <h6>Telefon: <?= $phone ?></h6>
             </div>
@@ -408,16 +402,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <div class="modal-body">
           <form method="post" id="myForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="firstName" class="form-label">First Name:</label>
-                <input class="form-control" type="text" id="firstName" name="first_name" value="<?= $first_name ?>">
+              <div class="mb-3">
+                <label for="name" class="form-label">Nume:</label>
+                <input class="form-control" type="text" id="name" name="name" value="<?= $name ?>">
               </div>
-              <div class="col-md-6">
-                <label for="lastName" class="form-label">Last Name:</label>
-                <input class="form-control" type="text" id="lastName" name="last_name" value="<?= $last_name ?>">
-              </div>
-            </div>
 
             <div class="mb-3">
               <label for="email" class="form-label">Adresă de email:</label>

@@ -166,7 +166,7 @@ $result = mysqli_query($conn, $sql);
                         ?>
 
                         <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="user/myaccount.php">Profile</a></li>
-                        <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings.php">Settings</a></li>
+                        <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings/settings.php">Settings</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -257,41 +257,34 @@ $result = mysqli_query($conn, $sql);
 
     </div>
 
-    <h3 class="text-center">Termeni si conditii</h3>
 
     <div class="container mb-5">
 
-        <ol>
-            <li>
-                <strong>Rezervări și Plăți:</strong>
-                <ul>
-                    <li>Rezervările pot fi făcute prin intermediul site-ului nostru sau prin intermediul serviciilor noastre de rezervări partenere.</li>
-                    <li>Plata este necesară pentru a confirma rezervarea.</li>
-                    <li>Toate plățile trebuie efectuate în avans, conform politicilor noastre de plată.</li>
-                </ul>
-            </li>
-            <li>
-                <strong>Politica de Anulare:</strong>
-                <ul>
-                    <li>Anulările trebuie făcute cu cel puțin 48 de ore înainte de data de check-in pentru a evita penalizări.</li>
-                    <li>Anulările efectuate mai puțin de 48 de ore înainte de data de check-in pot fi supuse unor taxe de anulare.</li>
-                </ul>
-            </li>
-            <li>
-                <strong>Politica de Check-in și Check-out:</strong>
-                <ul>
-                    <li>Check-in-ul este disponibil începând cu ora 14:00, iar check-out-ul trebuie efectuat până la ora 12:00.</li>
-                    <li>Check-in-ul devreme sau check-out-ul târziu pot fi posibile în funcție de disponibilitate și pot fi supuse unor taxe suplimentare.</li>
-                </ul>
-            </li>
-            <li>
-                <strong>Condiții Speciale:</strong>
-                <ul>
-                    <li>Poți specifica aici orice alte condiții speciale sau informații relevante pentru clienți.</li>
-                </ul>
-            </li>
-        </ol>
+    <h1>Termeni și Condiții pentru Shopping City</h1>
+    <p>Ultima actualizare: 11.03.2024</p>
 
+    <h2>Bine ați venit pe Shopping City!</h2>
+    <p>Vă rugăm să citiți cu atenție termenii și condițiile de mai jos înainte de a utiliza site-ul nostru. Prin accesarea și utilizarea Shopping City, acceptați și consimțiți să respectați acești termeni și condiții.</p>
+
+    <h3>1. Despre Shopping City</h3>
+    <p>Shopping City este un proiect personal creat în scopul de a împărtăși și demonstra abilitățile de web design și dezvoltare web ale proprietarului. Site-ul este o platformă de prezentare și nu este destinat comercializării de produse sau servicii.</p>
+
+    <h3>2. Utilizarea Site-ului</h3>
+    <p>Site-ul poate fi accesat pentru vizualizarea diverselor produse listate. Aceste produse sunt prezentate cu scop demonstrativ și nu sunt disponibile pentru achiziție. Utilizatorii sunt rugați să nu încerce să plaseze comenzi prin intermediul site-ului, deoarece nicio solicitare de acest fel nu va fi procesată.</p>
+
+    <h3>3. Proprietatea Intelectuală</h3>
+    <p>Conținutul prezentat pe Shopping City, inclusiv textele, grafica, logo-urile și imaginile, sunt utilizate fără o permisiune explicită pentru drepturile de autor. Este responsabilitatea utilizatorilor să determine dacă pot utiliza aceste materiale în conformitate cu legislația privind drepturile de autor. Proprietarul Shopping City nu își asumă responsabilitatea pentru încălcările drepturilor de autor comise de utilizatori sau de alte părți.</p>
+
+    <h3>4. Limitarea Răspunderii</h3>
+    <p>Proprietarul Shopping City nu va fi răspunzător pentru orice daune directe, indirecte, incidentale, speciale sau consecvențiale rezultate din utilizarea sau incapacitatea de a utiliza site-ul.</p>
+
+    <h3>5. Modificări ale Termenilor și Condițiilor</h3>
+    <p>Shopping City își rezervă dreptul de a modifica sau actualiza acești termeni și condiții oricând, fără notificare prealabilă. Vă încurajăm să revizuiți periodic această pagină pentru a fi la curent cu eventualele schimbări.</p>
+
+    <h3>6. Contact</h3>
+    <p>Pentru orice întrebări sau clarificări legate de termenii și condițiile site-ului, vă rugăm să ne contactați la bogdanrusu98@yahoo.ro.</p>
+
+    <p>Prin utilizarea Shopping City, confirmați că ați citit, înțeles și acceptat termenii și condițiile prezentate mai sus.</p>
 
 
     </div>

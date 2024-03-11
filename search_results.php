@@ -56,6 +56,8 @@ if (isset($_GET['search_query'])) {
         <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
 
         <link rel="stylesheet" href="css/nav.css">
+                <!--ICON-->
+                <link rel="icon" type="image/x-icon" href="img/logo-color.png">
         <style>
             .feature-icon {
                 font-size: 2.5rem;
@@ -95,7 +97,7 @@ if (isset($_GET['search_query'])) {
                         <?php if (isset($_SESSION['email'])) { ?>
                             <!-- Dacă utilizatorul este autentificat, afișează alte opțiuni -->
                             <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="user/myaccount.php">Profile</a></li>
-                            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings.php">Settings</a></li>
+                            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="settings/settings.php">Settings</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -279,7 +281,7 @@ if (isset($_GET['search_query'])) {
                                                 }
                                                 ?>
                                             </span>
-                                            <p class="card-text"><?php echo $row['price']; ?> Lei</p>
+                                            <p class="card-text text-danger fs-6"><?php echo $row['price']; ?> Lei</p>
                                             <div class="d-flex">
                                                 <!-- Formular pentru adăugarea în coș -->
                                                 <form method="POST" action="php/add_to_cart.php" class="d-inline-block position-relative">
