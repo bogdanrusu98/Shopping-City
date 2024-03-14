@@ -10,14 +10,17 @@ include("../php/total_products_wishlist.php");
 include("../php/check_settings.php");
 
 
-
+$display_voucher = "d-none";
 if (isset($_SESSION['id'])) {
     $userID = $_SESSION['id'];
 } else {
     header('Location: ../login.php');
     exit();
 }
+
+
 $total = null;
+$display = '';
 // Verificați dacă utilizatorul este autentificat și obțineți ID-ul acestuia
 if (isset($_SESSION['id'])) {
     $userID = $_SESSION['id'];
@@ -29,7 +32,7 @@ if (isset($_SESSION['id'])) {
         WHERE c.userID = $userID";
 
     $result = mysqli_query($conn, $sql);
-
+    
 
 ?>
 
@@ -63,7 +66,9 @@ if (isset($_SESSION['id'])) {
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
-
+        <!--ICON-->
+        <link rel="icon" type="image/x-icon" href="../img/logo-color.png">
+        
         <link rel="stylesheet" href="../css/nav.css">
         <style>
             .feature-icon {
@@ -220,12 +225,13 @@ if (isset($_SESSION['id'])) {
                             // Extrage prețul și cantitatea produsului curent
                             $price = $row['price'];
                             $quantity = $row['quantity'];
-
+                            $cartID = $row['cartID'];
                             // Calculează subtotalul pentru acest produs
                             $subtotal = $price * $quantity;
 
                             // Adaugă subtotalul la totalul general
                             $total += $subtotal;
+                            $display = "d-block";
                     ?>
                             <div class="card mb-3">
                                 <div class="row g-0">
@@ -262,14 +268,64 @@ if (isset($_SESSION['id'])) {
                 <?php
                         }
                     } else {
-                        echo "<div class=\"cart\">";
-                        echo "   <div class=\"card w-100 container my-4\"><h3>Cosul este gol.</h3></div>";
+                        echo "<div class=\"cart alert alert-warning alert-dismissible fade show\" role=\"alert\">";
+                        echo "   <div class=\"w-100 container\"><h4>Cosul este gol.</h4></div>";
+                        echo "<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>";
                         echo "</div>";
+                        $display = "d-none";
                     }
                 }
                 ?>
+                 <?php
+
+// Verifică dacă formularul a fost trimis
+if (isset($_POST['voucher']) && !isset($_SESSION['voucher_discount'])) {
+    // Preia datele din formular
+    $voucher = $_POST['voucher'];
+    $check_query = "SELECT * FROM vouchers WHERE voucher_code = '$voucher' AND user_id = $userID AND on_cart = 0";
+    $result = mysqli_query($conn, $check_query);
+    
+    if (mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        $is_active = $row['is_active'];
+        $voucher_id = $row['voucher_id'];
+        if($is_active == 1) {
+            $sql = "UPDATE vouchers SET on_cart = 1 WHERE voucher_code = '$voucher'";
+            $_SESSION['form_processed'] = true; // Marchează că formularul a fost procesat
+           // Execută interogarea pentru a dezactiva voucherul
+           mysqli_query($conn, $sql);
+
+           $display_voucher = 'd-block';
+        } else {
+            echo "Voucher-ul nu mai este activ.";
+        }
+    } else {
+        echo "Seria voucherului nu există în baza de date.";
+    }
+    
+}
+
+
+                                    ?>
+                                    <?php
+                                        $vouchers_added = '';
+                                         // Interogare pentru a verifica dacă voucher_code există în baza de date și nu este deja atribuită unui utilizator
+                                        $query = "SELECT * FROM vouchers WHERE user_id = $userID AND on_cart =  1";
+                                        $result = mysqli_query($conn, $query);
+
+                                        
+                                        if (mysqli_num_rows($result) > 0) {
+                                            $row = mysqli_fetch_assoc($result);
+                                            $voucher_amount = $row['discount_amount'];
+
+                                            $total = $total - $voucher_amount;
+                                            $display_voucher = "d-block";
+                                            $voucher_id = $row['voucher_id'];
+                                            $voucher = $row['voucher_code'];
+                                        }
+                                        ?>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 <?=$display?>">
                     <div class="card mb-3">
                         <div class="row g-0">
                             <div class="col-md-12">
@@ -277,10 +333,28 @@ if (isset($_SESSION['id'])) {
                                     <h3 class="card-title fw-bold mb-4">Sumar comanda</h3>
                                     <h6 class="card-text">Cost produse: <?= $total ?> lei</h6>
                                     <h6 class="card-text">Cost livrare: 0 lei</h6>
+                                    <h6 class="<?php if (isset($voucher_amount)) {$display_voucher;} else{echo "d-none";} ?> card-text">Reducere conform voucher: -<?=$voucher_amount?></h6>
                                     <h3 class="card-text fw-bold">Total: <?php echo $total . ' lei' ?></h3>
                                     <form action="../php/checkout.php" method="post">
                                         <button class="btn btn-primary w-100 my-3">Plaseaza comanda</button>
                                     </form>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="card-body">
+                                    <h3 class="card-title fw-bold mb-4">Ai un voucher sau un card cadou?</h3>
+                                    <form action="<?=$_SERVER['PHP_SELF']?>" class="d-inline <?php if (!isset($voucher_amount)) {$display_voucher;} else{echo "d-none";} ?>" method="post">
+                                        <input type="text" class="form-control" name="voucher">
+                                        <button type="submit" class="btn btn-primary w-100 my-3">Adauga voucher</button>
+                                    </form>
+                                   
+                                        
+                                    <div class="card p-3 <?=$display_voucher?>">
+                                        <div class="card-title fw-bold">Voucherele mele:</div>
+                                        
+                                        <div class="card-text"><?=$voucher?>
+                                        <button type="button" id="removeVoucher" value="<?=$voucher_id?>" class="btn-close float-end" aria-label="Close"></button></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -397,7 +471,33 @@ if (isset($_SESSION['id'])) {
                     }
                 });
             }
+            
         </script>
+<script>
+$(document).ready(function() {
+    $('#removeVoucher').on('click', function() {
+        var voucher = $('#removeVoucher').val(); // preia valoarea voucherului din câmpul ascuns
+        $.ajax({
+            url: '../php/remove_voucher.php', // Aici specifici calea către fișierul PHP extern
+            type: 'POST', // Poți folosi POST sau GET în funcție de cum ai configurat fișierul PHP
+            data: { 
+                action: 'remove_voucher', // Acțiunea pentru a indica fișierului PHP ce să facă
+                voucher_id: voucher // Trimite valoarea voucherului către fișierul PHP
+            },
+            success: function(response) {
+                // Aici poți trata răspunsul primit de la fișierul PHP
+                console.log(response);
+                window.location = "products.php";
+
+            },
+            error: function(xhr, status, error) {
+                // Aici poți trata erorile întâmpinate în timpul solicitării AJAX
+                console.error(error);
+            }
+        });
+    });
+});
+</script>
 
 
 

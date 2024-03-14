@@ -40,12 +40,9 @@ if (mysqli_num_rows($result) > 0) {
         $payment = $row['payment'];
         $type_d = $row['type_d'];
         $type_f = $row['type_f'];
-        $user_id = $row['user_id'];
+
     }}
-    if($user_id !== $id) {
-      header('Location: shopping.php');
-      die();
-    }
+
 
 
 
@@ -362,7 +359,7 @@ if ($type_f == 'F') {
         ?>
      <div class="d-flex align-items-center">
     <img src="<?=$imagePath?>" width="100" class="me-3">
-    <span style="color: #abd373" class="fs-5 fw-bold"><?=$newStatus?></span>
+    <span style="color: #abd373" class="fs-5 fw-bold"><?=$newStatus?></span><button class="btn btn-warning" id="change-price" data-bs-toggle="modal" data-bs-target="#statusModal"><i class="fa-solid fa-pen-to-square"></i></button>
 </div>
 
   
@@ -390,7 +387,8 @@ if ($type_f == 'F') {
               </div>
               <div class="col-md-4 card p-3">
               <span class="fw-bold">Modalitate de plata:</span>
-              <span><?=$payment?></span>
+              <span><?=$payment?></span><button class="btn btn-warning w-25" disabled id="change-price" data-bs-toggle="modal" data-bs-target="#priceModal"><i class="fa-solid fa-pen-to-square"></i></button>
+              
               <p class="mt-4">Valoare totala: <?=$total_amount?></p>
 
               </div>
@@ -521,33 +519,37 @@ if ($type_f == 'F') {
 
 
 
-  <div class="modal" tabindex="-1" style="display: none;" id="change-data">
+  <!-- Modal pentru editarea statusului -->
+  <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="stockModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Adauga voucher nou</h5>
-          <button type="button" class="btn-close" onclick="closeModal()" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title" id="stockModalLabel">Modificare Status</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="post" id="myForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+          <form action="../php/update_order.php?order_id=<?php echo $order_id; ?>" id="myForm3" method="post">
+            <!-- Câmpuri de editare pentru stoc -->
+            <label for="newStock">Modificare Status</label>
+            <select class="form-select" name="status" aria-label="Default select example">
+                <option selected disabled>Open this select menu</option>
+                <option value="New">New</option>
+                <option value="processing">Processing</option>
+                <option value="shipping">Shipping</option>
+                <option value="shipped">Shipped</option>
+                <option value="canceled">canceled</option>
 
-
-            <div class="mb-3">
-              <label for="voucher_series" class="form-label">Introdu aici seria:</label>
-              <input class="form-control" type="text" id="voucher_code" name="voucher_code">
-            </div>
-
-          </form>
+            </select>
 
         </div>
+        </form>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closeModal()" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="submitForm()">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anulează</button>
+          <button type="button" class="btn btn-primary" id="saveStockChanges" onclick="submitForm('myForm3')">Salvează Modificările</button>
         </div>
       </div>
     </div>
   </div>
-
 
 
 
@@ -605,7 +607,7 @@ if ($type_f == 'F') {
     // Funcție pentru a trimite datele formularului
     function submitForm() {
       // Aici poți adăuga logica pentru a trimite datele formularului folosind AJAX sau poți folosi form.submit() direct
-      document.getElementById("myForm").submit(); // Acesta va trimite datele formularului
+      document.getElementById("myForm3").submit(); // Acesta va trimite datele formularului
     }
   </script>
   <!-- Adaugă script-ul jQuery și Bootstrap JS la sfârșitul documentului pentru performanță -->

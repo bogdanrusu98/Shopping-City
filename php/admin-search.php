@@ -36,7 +36,7 @@ $result = $conn->query($sql);
                 }
                     echo "</tr>";
                 echo "</table>";
-            } else {
+            } elseif ($table === 'products') {
                 // Afișează rezultatele sub formă de tabel
                 echo "<table border='1' class='table table-striped my-3 align-middle'>
                 <thead class='table-dark align-middle'>
@@ -73,6 +73,37 @@ $result = $conn->query($sql);
                 echo "</table>";
                 
             
+            }else{
+                    // Afișează rezultatele sub formă de tabel
+                    echo "<table border='1' class='table table-striped my-3 align-middle'>
+                    <thead class='table-dark align-middle'>
+                    <tr>
+                
+                    <th><a href='?sort=id&q=$q'>ID comanda</a></th><script>console.log($q)</script>
+                    <th><a href='?sort=name&q=$q'>Nume</a></th>
+                    <th><a href='?sort=id&q=$q'>Adresa Livrare</a></th>
+                    <th><a href='?sort=name&q=$q'>Adresa Facturare</a></th>
+                    <th><a href='?sort=id&q=$q'>Status</a></th>
+                    <th><a href='?sort=name&q=$q'>Plata</a></th>
+                    <th><a href='?sort=name&q=$q'>Suma totala</a></th>
+                    <th>Actiuni</th>
+                    <th></th>
+    
+                    </tr>
+                    </thead>";
+                    while($row = $result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>" . $row['order_id'] . "</td>";
+                        echo "<td>" . $row['user_id'] . "</td>";
+                        echo "<td>" . $row['address_d'] . "</td>";
+                        echo "<td>" . $row['address_f'] . "</td>";
+                        echo "<td>" . $row['status'] . "</td>";
+                        echo "<td>" . $row['payment'] . "</td>";
+                        echo "<td>" . $row['total_amount'] . "</td>";
+                        echo "<td><button type='button' class='btn btn-warning'  onclick='goProduct(" . $row['order_id'] . ")' data-bs-toggle='modal' data-bs-target='#exampleModal'><i class='fa-solid fa-pen'></i> Editeaza</button></td>";
+                    }
+                        echo "</tr>";
+                    echo "</table>";
             }
             echo "</table>";
 

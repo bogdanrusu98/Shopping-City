@@ -260,21 +260,21 @@ width: 100%!important;
       <div class="carousel-content container ">
         <h2>Descopera noua colectie de plante!</h2>
         <p>Explorează natura în toată splendoarea ei.</p>
-        <a href="#" class="btn btn-primary btn-shopping">Shopping Now</a>
+        <a href="search_results.php?search_query=Plante" class="btn btn-primary btn-shopping">Shopping Now</a>
       </div>
     </div>
     <div class="carousel-item" style="background-image: url('img/image2.jpg'); ">
       <div class="carousel-content container">
         <h2 class="text-info">Telefoane Inteligente: Inovație în Palmă</h2>
         <p class="text-white">Experimentează Viitorul în Fiecare Apel</p>
-        <a href="#" class="btn btn-primary btn-shopping">Shopping Now</a>
+        <a href="search_results.php?search_query=Telefoane" class="btn btn-primary btn-shopping">Shopping Now</a>
       </div>
     </div>
     <div class="carousel-item" style="background-image: url('img/image1.jpg');">
       <div class="carousel-content container">
-        <h2 class="selected">Transformă-ți casa într-o oază verde!</h2>
-        <p class="selected">Creează un mediu relaxant și revigorant în propria ta locuință cu selecția noastră de plante potrivite pentru interior.</p>
-        <a href="#" class="btn btn-primary btn-shopping">Shopping Now</a>
+        <h2 class="text-danger fw-bold">Transformă-ți casa într-o oază verde!</h2>
+        <p class="text-danger fw-bold">Creează un mediu relaxant și revigorant în propria ta locuință cu selecția noastră de plante potrivite pentru interior.</p>
+        <a href="search_results.php?search_query=Plante" class="btn btn-primary btn-shopping">Shopping Now</a>
       </div>
     </div>
   </div>

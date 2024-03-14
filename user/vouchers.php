@@ -336,17 +336,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <h4>Voucherele mele:</h4>
       <div class="row">
         <?php
-        $sql = "SELECT * FROM vouchers WHERE user_id = '$id'";
+        $sql = "SELECT * FROM vouchers WHERE user_id = '$id' AND is_active = 1";
         $result = $conn->query($sql);
 
         if ($result && $result->num_rows > 0) {
           while ($row = $result->fetch_assoc()) {
+            $on_cart = $row['on_cart'];
         ?>
             <div class="col-md-4 my-2">
               <div class="card">
                 <div class="card-body">
                   <h5 class="card-title">Reducere <?= $row['discount_amount'] ?> lei</h5>
                   <p class="card-text">Serie <?= $row['voucher_code'] ?><br> Expiră pe <?= $row['expiration_date'] ?></p>
+                  <?php
+                  if($on_cart == 1) {
+                    echo "<div class='badge rounded-pill bg-info text-dark'>Used on cart</div>";
+                  }
+                  ?>
                 </div>
               </div>
             </div>

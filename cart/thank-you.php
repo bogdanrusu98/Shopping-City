@@ -73,7 +73,8 @@ if (isset($_GET['orderID']) && isset($_GET['message'])) {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
-
+        <!--ICON-->
+        <link rel="icon" type="image/x-icon" href="../img/logo-color.png">
   <link rel="stylesheet" href="../css/nav.css">
   <style>
     .feature-icon {

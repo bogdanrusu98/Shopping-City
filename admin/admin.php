@@ -107,6 +107,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index-settings.php">Index Settings</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="orders.php">Orders</a>
+                </li>
             </ul>
             <a href="../index.php" class="text-warning ms-auto d-block">Catre site</a>
         </div>
