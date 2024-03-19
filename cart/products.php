@@ -19,14 +19,16 @@ if (isset($_SESSION['id'])) {
 }
 
 
+
 $total = null;
+$price_total = null;
 $display = '';
 // Verificați dacă utilizatorul este autentificat și obțineți ID-ul acestuia
 if (isset($_SESSION['id'])) {
     $userID = $_SESSION['id'];
 
     // Interogare pentru a obține produsele din coș pentru utilizatorul curent
-    $sql = "SELECT c.*, p.name, p.rating, p.price, p.imageHref 
+    $sql = "SELECT c.*, p.name, p.rating, p.price, p.imageHref, p.stockQuantity 
         FROM cart c 
         INNER JOIN products p ON c.productID = p.productID 
         WHERE c.userID = $userID";
@@ -109,7 +111,7 @@ if (isset($_SESSION['id'])) {
                         <?php if (isset($_SESSION['email'])) { ?>
                             <!-- Dacă utilizatorul este autentificat, afișează alte opțiuni -->
                             <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="../user/myaccount.php">Profile</a></li>
-                            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="../settings.php">Settings</a></li>
+                            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="../settings/settings.php">Settings</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -226,12 +228,15 @@ if (isset($_SESSION['id'])) {
                             $price = $row['price'];
                             $quantity = $row['quantity'];
                             $cartID = $row['cartID'];
+                            $stockQuantity = $row['stockQuantity'];
                             // Calculează subtotalul pentru acest produs
                             $subtotal = $price * $quantity;
 
                             // Adaugă subtotalul la totalul general
                             $total += $subtotal;
+                            $price_total = $total;
                             $display = "d-block";
+                            $stockQuantity >= $quantity ? $display_stock = 'd-none' : $display_stock = 'd-block';
                     ?>
                             <div class="card mb-3">
                                 <div class="row g-0">
@@ -245,11 +250,12 @@ if (isset($_SESSION['id'])) {
                                             <a href="../product.php?id=<?php echo $row['productID']; ?>">
                                                 <h5 class="card-title fw-bold"><?= $row['name'] ?></h5>
                                             </a>
+                                            <div class="text-danger <?=$display_stock?>">Produsul nu se mai afla in stoc. Va rugam sa scoateti produsul din cos inainte de a incerca sa plasati comanda.</div>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="card-body">
-                                            <h5 class="card-title mb-0 pt-3"><strong><?php echo $row['price'] . ' lei' ?></strong></h5>
+                                            <h5 class="card-title mb-0 pt-3"><strong><?php  echo $row['price'] . ' lei' ?></strong></h5>
                                             <form id="quantityForm">
                                                 <div class="mb-3">
                                                     <label for="quantity" class="form-label">Quantity:</label>
@@ -289,18 +295,48 @@ if (isset($_POST['voucher']) && !isset($_SESSION['voucher_discount'])) {
         $row = mysqli_fetch_assoc($result);
         $is_active = $row['is_active'];
         $voucher_id = $row['voucher_id'];
+        $voucherDiscount = $row['discount_amount'];
         if($is_active == 1) {
             $sql = "UPDATE vouchers SET on_cart = 1 WHERE voucher_code = '$voucher'";
+
+            // Calculează numărul total de produse în coș pentru utilizatorul curent
+    $countQuery = "SELECT COUNT(*) AS productCount FROM cart WHERE userID = '$userID'";
+    $countResult = $conn->query($countQuery);
+    $row = $countResult->fetch_assoc();
+    $productCount = $row['productCount'];
+
+    // Dacă există produse în coș, aplică discountul
+    if ($productCount > 0) {
+        $individualDiscount = $voucherDiscount / $productCount; // Discountul per produs
+
+        // Actualizează discountul pentru fiecare produs din coș
+        $updateQuery = "UPDATE cart SET discount = '$individualDiscount' WHERE userID = '$userID'";
+        if ($conn->query($updateQuery) === TRUE) {
+            $message_voucher = "Discountul a fost aplicat cu succes pe produse.";
+        } else {
+            echo "Eroare la actualizarea discountului: " . $conn->error;
+        }
+    } else {
+        echo "Nu există produse în coș.";
+    }
+
+
+
             $_SESSION['form_processed'] = true; // Marchează că formularul a fost procesat
            // Execută interogarea pentru a dezactiva voucherul
            mysqli_query($conn, $sql);
 
+           if(isset($voucher)) {
+            $sql = "UPDATE cart SET voucher_code = '$voucher' WHERE userID = '$userID'";
+            mysqli_query($conn, $sql);
+            }
+
            $display_voucher = 'd-block';
         } else {
-            echo "Voucher-ul nu mai este activ.";
+            $message_voucher = "Voucher-ul nu mai este activ.";
         }
     } else {
-        echo "Seria voucherului nu există în baza de date.";
+        $message_voucher = "Seria voucherului nu există în baza de date.";
     }
     
 }
@@ -318,7 +354,8 @@ if (isset($_POST['voucher']) && !isset($_SESSION['voucher_discount'])) {
                                             $row = mysqli_fetch_assoc($result);
                                             $voucher_amount = $row['discount_amount'];
 
-                                            $total = $total - $voucher_amount;
+                                            $price_total = $total - $voucher_amount;
+                                            if($price_total < 0) {$price_total = 0;}
                                             $display_voucher = "d-block";
                                             $voucher_id = $row['voucher_id'];
                                             $voucher = $row['voucher_code'];
@@ -333,19 +370,24 @@ if (isset($_POST['voucher']) && !isset($_SESSION['voucher_discount'])) {
                                     <h3 class="card-title fw-bold mb-4">Sumar comanda</h3>
                                     <h6 class="card-text">Cost produse: <?= $total ?> lei</h6>
                                     <h6 class="card-text">Cost livrare: 0 lei</h6>
-                                    <h6 class="<?php if (isset($voucher_amount)) {$display_voucher;} else{echo "d-none";} ?> card-text">Reducere conform voucher: -<?=$voucher_amount?></h6>
-                                    <h3 class="card-text fw-bold">Total: <?php echo $total . ' lei' ?></h3>
+                                    <h6 class="<?php echo isset($voucher_amount) ? $display_voucher : 'd-none'; ?> card-text">Reducere conform voucher: -<?=$voucher_amount?></h6>
+
+                                    <h3 class="card-text fw-bold">Total: <?php echo $price_total . ' lei' ?></h3>
+                                    
                                     <form action="../php/checkout.php" method="post">
-                                        <button class="btn btn-primary w-100 my-3">Plaseaza comanda</button>
+                                        <input type="hidden" name="voucher_codescu" value="<?=$voucher?>" readonly></input>
+                                        <button class="btn btn-primary w-100 my-3" <?php echo $display_stock === 'd-block' ? 'disabled' : ''; ?>>Plaseaza comanda</button>
                                     </form>
+
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="card-body">
                                     <h3 class="card-title fw-bold mb-4">Ai un voucher sau un card cadou?</h3>
-                                    <form action="<?=$_SERVER['PHP_SELF']?>" class="d-inline <?php if (!isset($voucher_amount)) {$display_voucher;} else{echo "d-none";} ?>" method="post">
+                                    <form action="<?=$_SERVER['PHP_SELF']?>" class="d-inline <?php echo !isset($voucher_amount) ? 'd-block' : 'd-none'; ?>" method="post">
                                         <input type="text" class="form-control" name="voucher">
                                         <button type="submit" class="btn btn-primary w-100 my-3">Adauga voucher</button>
+                                        <div class="text-danger"><?php echo isset($message_voucher) ? $message_voucher : '' ?></div>
                                     </form>
                                    
                                         

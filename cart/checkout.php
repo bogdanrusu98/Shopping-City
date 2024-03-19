@@ -5,12 +5,14 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 // Includeți fișierul de configurare al bazei de date și stabiliți conexiunea
 include("../php/config.php");
+
 include("../php/check_settings.php");
 include("../php/total_products.php");
 include("../php/total_products_wishlist.php");
 
 $addressesDropdown = '';
 $addressesDropdown_j = '';
+$total2 = null;
 
 if (isset($_SESSION['id'])) {
   $userID = $_SESSION['id'];
@@ -19,6 +21,9 @@ if (isset($_SESSION['id'])) {
   exit();
 }
 $total = null;
+
+
+
 // Verificați dacă utilizatorul este autentificat și obțineți ID-ul acestuia
 if (isset($_SESSION['id'])) {
   $userID = $_SESSION['id'];
@@ -31,6 +36,8 @@ if (isset($_SESSION['id'])) {
 
   $result = mysqli_query($conn, $sql);
 }
+
+
 
 ?>
 
@@ -102,10 +109,11 @@ if (isset($_SESSION['id'])) {
           My Account
         </a>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <?php if (isset($_SESSION['email'])) { ?>
+          <?php if (isset($_SESSION['email'])) {
+             ?>
             <!-- Dacă utilizatorul este autentificat, afișează alte opțiuni -->
             <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="../user/myaccount.php">Profile</a></li>
-            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="../settings.php">Settings</a></li>
+            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="../settings/settings.php">Settings</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -206,6 +214,7 @@ if (isset($_SESSION['id'])) {
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Adresa livrare</h5>
+
             <form action="../php/create_order.php" method="post">              <!-- Alte câmpuri pentru adresa de livrare (nume, prenume, etc.) -->
             <nav>
   <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -276,9 +285,6 @@ if (isset($_SESSION['id'])) {
 
 
 
-
-
-  
   
   <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
     
@@ -419,15 +425,25 @@ if (isset($_SESSION['id'])) {
           // Extrage prețul și cantitatea produsului curent
           $price = $row['price'];
           $quantity = $row['quantity'];
+          
+          
+          $discount = (int)$row['discount'];
+          
 
           // Calculează subtotalul pentru acest produs
           $subtotal = $price * $quantity;
 
           // Adaugă subtotalul la totalul general
-          $total += $subtotal;
+          $total += $subtotal - $discount;
+          $total2 += $subtotal;
         }
       }
     }
+    $countQuery = "SELECT COUNT(discount) AS discountCount FROM cart WHERE userID= '$userID'";
+    $countResult = $conn->query($countQuery);
+    $row = $countResult->fetch_assoc();
+    $discountCount = (int)$row['discountCount'];
+    $discountTotal = $discount * $discountCount;
     ?>
 
     <div class="row justify-content-center"> <!-- Utilizează clasa justify-content-center pentru a centra conținutul pe orizontală -->
@@ -437,10 +453,15 @@ if (isset($_SESSION['id'])) {
             <div class="col-md-12">
               <div class="card-body">
                 <h3 class="card-title fw-bold mb-4">Sumar comanda</h3>
-                <h6 class="card-text">Cost produse: <?= $total ?> lei</h6>
+                <h6 class="card-text">Cost produse: <?= $total2 ?> lei</h6>
                 <h6 class="card-text">Cost livrare: 0 lei</h6>
+                <h6 class="card-text">Reducere: <?= $discountTotal ?> lei</h6>
+                <input type="hidden" name="discount" value="<?= $discountTotal ?>"></input>
                 <h3 class="card-text fw-bold">Total: <?php echo "<input name='total_amount' type='hidden' value='$total'>$total  lei</input>" ?></h3>
-                
+                <input type="hidden" name="rawTotal" value="<?= $total2 ?>"></input>
+                <input type="hidden" name="voucher_code" value="<?= $voucher_code;
+ ?>"></input>
+
                   <button class="btn btn-primary w-100 my-3">Plaseaza comanda</button>
                 </form>
               </div>
@@ -515,66 +536,6 @@ if (isset($_SESSION['id'])) {
     </div>
 
   </footer>
-  <script>
-
-  </script>
-  <script>
-    // Funcție pentru afișarea toastelelor Bootstrap
-    function showToast(status, message) {
-      // Selectați elementul toast din HTML
-      var toastElement = document.getElementById('myToast');
-      var toastBody = toastElement.querySelector('.toast-body');
-
-      // Setează clasa corectă în funcție de status
-      toastElement.classList.remove('bg-success', 'bg-danger'); // Elimină clasele anterioare
-      toastElement.classList.add(status === 'success' ? 'bg-success' : 'bg-danger');
-
-      // Setează mesajul în corpul toastei
-      toastBody.innerHTML = message;
-
-      // Inițializează toastul Bootstrap
-      var toast = new bootstrap.Toast(toastElement);
-
-      // Afișează toastul
-      toast.show();
-    }
-
-    // Afișează toastele la încărcarea paginii
-    window.onload = function() {
-      <?php
-      if (isset($_POST['status']) && isset($_POST['message'])) {
-        echo "showToast('" . $_POST['status'] . "', '" . $_POST['message'] . "');";
-      }
-      ?>
-    };
-
-    // Funcție pentru a actualiza cantitatea în coșul de cumpărături
-    function updateCart(productId, newQuantity) {
-      $.ajax({
-        url: '../php/update_cart.php',
-        type: 'POST',
-        data: {
-          productID: productId,
-          quantity: newQuantity
-        },
-        dataType: 'json',
-        success: function(response) {
-          // Verificați răspunsul primit
-          if (response.status === 'success') {
-            // Utilizați mesajul din răspuns pentru a afișa un toast de succes
-            showToast('success', response.message);
-            location.reload();
-          } else {
-            // Utilizați mesajul din răspuns pentru a afișa un toast de eroare
-            showToast('error', response.message);
-          }
-        },
-        error: function(xhr, status, error) {
-          console.error(error);
-        }
-      });
-    }
-  </script>
 
   <script>
     document.getElementById("address_f").addEventListener("change", function() {

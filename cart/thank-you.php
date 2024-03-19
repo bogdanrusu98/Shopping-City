@@ -39,9 +39,44 @@ if (isset($_GET['orderID']) && isset($_GET['message'])) {
     echo "Eroare: Nu s-au primit parametrii necesari.";
 }
 
+$sql = "SELECT voucher_code FROM cart WHERE userID = $userID";
 
+$result = mysqli_query($conn, $sql);
+if (mysqli_num_rows($result) > 0) {
+  while ($row = mysqli_fetch_assoc($result)) {
+    $voucher_code = $row['voucher_code'];
+  }}
 
+  if(isset($voucher_code)) {
+  $sql = "UPDATE vouchers SET is_active = 0, on_cart = 0 WHERE voucher_code = '$voucher_code'";
+  mysqli_query($conn, $sql);
+  }
 
+  $sql = "SELECT c.*, p.name, p.rating, p.price, p.imageHref, p.stockQuantity
+              FROM cart c 
+              INNER JOIN products p ON c.productID = p.productID 
+              WHERE c.userID = $userID";
+              $result = mysqli_query($conn, $sql);
+              if (mysqli_num_rows($result) > 0) {
+                  while ($row = mysqli_fetch_assoc($result)) {
+                  // Extrage prețul și cantitatea produsului curent
+                      $name = $row['name'];
+                      $imageHref = $row['imageHref'];
+                      $product_id = $row['productID'];
+                      $quantity = $row['quantity'];
+                      $price = $row['price'];
+                      $stockQuantity = $row['stockQuantity'];
+                      $newStock = $stockQuantity - $quantity;
+                      $addProduct = "INSERT INTO ordered_products (order_id, product_id, quantity, price) 
+                      VALUES ('$orderID', '$product_id', '$quantity', '$price')";
+                      mysqli_query($conn, $addProduct);
+                      $sql = "UPDATE products SET stockQuantity = '$newStock' WHERE productID = $product_id";
+                      mysqli_query($conn, $sql);
+                  }}
+
+  $sql = "DELETE FROM cart WHERE userID = $userID";
+  mysqli_query($conn, $sql);
+  
 ?>
 
 <!DOCTYPE html>
@@ -115,7 +150,7 @@ if (isset($_GET['orderID']) && isset($_GET['message'])) {
           <?php if (isset($_SESSION['email'])) { ?>
             <!-- Dacă utilizatorul este autentificat, afișează alte opțiuni -->
             <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="../user/myaccount.php">Profile</a></li>
-            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="../settings.php">Settings</a></li>
+            <li><a class="dropdown-item" style="color: grey; font-size: 14px;" href="../settings/settings.php">Settings</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -335,10 +370,10 @@ if (isset($_GET['orderID']) && isset($_GET['message'])) {
                    <div class="row">
             <?php
             // Interogare pentru a obține produsele din coș pentru utilizatorul curent
-              $sql = "SELECT c.*, p.name, p.rating, p.price, p.imageHref 
-              FROM cart c 
-              INNER JOIN products p ON c.productID = p.productID 
-              WHERE c.userID = $userID";
+              $sql = "SELECT o.*, p.name, p.productID, p.rating, p.price, p.imageHref 
+              FROM ordered_products o 
+              INNER JOIN products p ON o.product_id = p.productID 
+              WHERE o.order_id = $orderID";
               $result = mysqli_query($conn, $sql);
               if (mysqli_num_rows($result) > 0) {
                   while ($row = mysqli_fetch_assoc($result)) {
@@ -348,12 +383,9 @@ if (isset($_GET['orderID']) && isset($_GET['message'])) {
                       $product_id = $row['productID'];
                       $quantity = $row['quantity'];
                       $price = $row['price'];
-                      
-                      $addProduct = "INSERT INTO ordered_products (order_id, product_id, quantity, price) 
-                      VALUES ('$orderID', '$product_id', '$quantity', '$price')";
 
                       // Executați interogarea și verificați rezultatul
-                      if (mysqli_query($conn, $addProduct)) {
+                      if (isset($addProduct)) {
                           $message = "Comanda dvs. a fost plasată cu succes!";
                           
                       } else {

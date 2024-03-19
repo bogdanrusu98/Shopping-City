@@ -41,6 +41,8 @@ if (mysqli_num_rows($result) > 0) {
         $type_d = $row['type_d'];
         $type_f = $row['type_f'];
         $user_id = $row['user_id'];
+        $discount = $row['discount'];
+        $rawTotal = $row['subtotal'];
     }}
     if($user_id !== $id) {
       header('Location: shopping.php');
@@ -479,7 +481,7 @@ if ($type_f == 'F') {
             Total produse:
         </div>
         <div class="col-md-2 text-end">
-            <?=$total_amount .' lei'?>
+            <?=$rawTotal .' lei'?>
         </div>
     </div>
     <div class="row justify-content-end">
@@ -488,6 +490,14 @@ if ($type_f == 'F') {
         </div>
         <div class="col-md-2 text-end">
             0 lei
+        </div>
+    </div>
+    <div class="row justify-content-end">
+        <div class="col-md-3 text-end">
+            Reducere:
+        </div>
+        <div class="col-md-2 text-end">
+            -<?= $discount . ' lei'?>
         </div>
     </div>
     <div class="row justify-content-end">
@@ -520,33 +530,6 @@ if ($type_f == 'F') {
 
 
 
-
-  <div class="modal" tabindex="-1" style="display: none;" id="change-data">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Adauga voucher nou</h5>
-          <button type="button" class="btn-close" onclick="closeModal()" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form method="post" id="myForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-
-
-            <div class="mb-3">
-              <label for="voucher_series" class="form-label">Introdu aici seria:</label>
-              <input class="form-control" type="text" id="voucher_code" name="voucher_code">
-            </div>
-
-          </form>
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closeModal()" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="submitForm()">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
 
 

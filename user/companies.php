@@ -378,7 +378,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   </div>
                   <p class="card-text text-muted"><?php echo $row['registration_number'], ', ', $row['address'], ', ', $row['city'], ', ', $row['county'], ', ', $row['bank_name'], ', ', $row['iban']; ?></p>
                   <form method="post" action="../php/delete_address.php">
-                    <input type="hidden" name="user_id" value="<?php echo $row['user_id']; ?>">
+                    <input type="hidden" name="id" value="<?php echo $row['company_id']; ?>">
                     <button type="submit" class="btn btn-danger">Șterge</button>
                   </form>
                 </div>

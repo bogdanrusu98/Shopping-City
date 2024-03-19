@@ -265,6 +265,8 @@ if ($result->num_rows > 0) {
                     // Verificăm stocul și afișăm corespunzător
                     if ($stockQuantity == 0) {
                         echo "<span class='text-danger fw-bold'>Indisponibil</span>";
+                    } else if ($stockQuantity <= 5) {
+                        echo "Disponibil <span class='bg-warning ms-2 p-1 rounded'>Stoc limitat</span>";
                     } else {
                         echo "Disponibil";
                     }

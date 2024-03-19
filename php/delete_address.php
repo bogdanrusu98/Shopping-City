@@ -34,7 +34,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
     // Închide conexiunea la baza de date
     mysqli_close($conn);
 } else {
-    // Redirecționează utilizatorul către o pagină de eroare sau afișează un mesaj corespunzător
-    header("Location: error.php");
-    exit(); // Oprește execuția scriptului pentru a preveni procesarea ulterioară
+    var_dump($id);
 }

@@ -14,6 +14,8 @@ if (isset($_POST['action']) && isset($_POST['voucher_id']) && $_POST['action'] =
         $sql = "UPDATE vouchers SET on_cart = 0 WHERE voucher_id = '$voucher_id'";
         mysqli_query($conn, $sql);
 
+        $sql = "UPDATE cart SET discount = 0 WHERE userID = '$userID'";
+        mysqli_query($conn, $sql);
         // Recalculează totalul coșului după eliminarea voucherului
         $total = 0;
         $cartQuery = "SELECT c.quantity, p.price FROM cart c JOIN products p ON c.productID = p.productID WHERE c.userID = '$userID'";

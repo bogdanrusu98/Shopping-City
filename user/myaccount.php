@@ -17,6 +17,7 @@ if (isset($_SESSION['id'])) {
   header("Location: ../login.php"); // Înlocuiește cu pagina ta de autentificare
   exit();
 }
+
 // Interogare pentru a prelua datele din baza de date
 $sql = "SELECT * FROM users where id = $id";
 $result = $conn->query($sql);

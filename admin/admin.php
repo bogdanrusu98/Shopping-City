@@ -1,3 +1,28 @@
+<?php
+    // Verifică dacă sesiunea nu este deja pornită
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+  }
+  include('../php/config.php');
+  // Verifică dacă utilizatorul este autentificat
+  if (isset($_SESSION['id'])) {
+    $userID = $_SESSION['id'];
+    $sql = "SELECT * FROM users WHERE id = $userID";
+    $result = mysqli_query($conn, $sql);
+    if (mysqli_num_rows($result) > 0) {
+        // Extragerea și afișarea adreselelor utilizatorului sub formă de opțiuni pentru meniul dropdown
+        while ($row = mysqli_fetch_assoc($result)) {
+            $is_admin = $row['isAdmin'];
+            $name = $row['name'];
+        }
+      }
+}else {
+      // Dacă este autentificat, redirecționează-l către o altă pagină
+      header("Location: ../index.php");
+      exit(); // Asigură-te că scriptul se oprește după redirecționare
+
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -115,7 +140,9 @@
         </div>
     </nav>
 
-
+        <div class="container">
+            <h3>Welcome, <?= $name ?></h3>
+        </div>
 
 
 

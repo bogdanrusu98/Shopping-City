@@ -25,6 +25,7 @@ if (isset($_SESSION['id'])) {
 
 // Verificați dacă s-a primit o cerere POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $voucher_code = $_POST['voucher_code'];
     // Verificați dacă s-au primit datele necesare
     if (isset($_POST['total_amount']) && isset($_POST['address_f_f']) || isset($_POST['address_f_j']) && isset($_POST['address_d_f']) || isset($_POST['address_d_j']) && isset($_POST['payment'])) {
         // Preiați datele din cerere
@@ -34,6 +35,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $address_d_j = $_POST['address_d_j'];
         $address_d_f = $_POST['address_d_f'];
         $payment = $_POST['payment'];
+        $rawTotal = $_POST['rawTotal'];
+        $discountTotal = $_POST['discount'];
+        
 
         if($address_f_j == null) {
             $address_f = $address_f_f;
@@ -49,10 +53,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $address_d = $address_d_j;
             $type_d = 'J';
         }
-// Definiți interogarea SQL pentru inserarea comenzii în baza de date
-$sql = "INSERT INTO orders (total_amount, status, user_id, address_f, address_d, payment, type_f, type_d) 
-        VALUES ('$total_amount', 'New', '$userID', '$address_f', '$address_d', '$payment', '$type_f', '$type_d')";
+        
+        if($discountTotal == null) {
+            $discountTotal = 0;
+        }
 
+$sql = "INSERT INTO orders (total_amount, status, user_id, address_f, address_d, payment, type_f, type_d, discount, subtotal) 
+        VALUES ('$total_amount', 'New', '$userID', '$address_f', '$address_d', '$payment', '$type_f', '$type_d', '$discountTotal', '$rawTotal')";
+var_dump($discountTotal);
 // Executați interogarea și verificați rezultatul
 if (mysqli_query($conn, $sql)) {
     // Definiți interogarea SQL pentru a obține ultimul order_id
@@ -64,7 +72,7 @@ if (mysqli_query($conn, $sql)) {
         $orderID = $row['order_id'];
         $message = "Comanda dvs. a fost plasată cu succes! #" . $orderID;
                         // Redirecționați utilizatorul către pagina thank-you.php împreună cu valorile corespunzătoare
-                        header("Location: ../cart/thank-you.php?orderID=$orderID&total_amount=$total_amount&address_f=$address_f&address_d=$address_d&payment=$payment&message=" . urlencode($message));
+                        header("Location: ../cart/thank-you.php?orderID=$orderID&total_amount=$total_amount&discount=$discountTotal&address_f=$address_f&address_d=$address_d&payment=$payment&message=" . urlencode($message));
                         exit();
     } else {
         $message = "Eroare la plasarea comenzii. Vă rugăm să încercați din nou.";
@@ -91,3 +99,5 @@ $result = mysqli_query($conn, $sql);
                             
                         
                         }}
+                        $sql2 = "UPDATE vouchers SET is_active = 0 WHERE voucher_code = $voucher_code";
+                        // Definiți interogarea SQL pentru inserarea comenzii în baza de date
